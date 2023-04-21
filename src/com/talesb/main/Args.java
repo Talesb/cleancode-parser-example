@@ -11,6 +11,7 @@ import com.talesb.main.argumentmarshaler.ArgumentMarshaler;
 import com.talesb.main.argumentmarshaler.BooleanArgumentMarshaler;
 import com.talesb.main.argumentmarshaler.IntegerArgumentMarshaler;
 import com.talesb.main.argumentmarshaler.StringArgumentMarshaler;
+import com.talesb.main.exception.ArgsException;
 
 public class Args {
 
@@ -153,19 +154,19 @@ public class Args {
 		String parameter = null;
 		try {
 			parameter = args[currentArgument];
-			intArgs.get(argChar).setInteger(Integer.parseInt(parameter));
+			intArgs.get(argChar).set(parameter);
 		} catch (ArrayIndexOutOfBoundsException e) {
 			valid = false;
 			errorArgumentId = argChar;
 			errorCode = ErrorCode.MISSING_INTEGER;
 
 			throw new ArgsException();
-		} catch (NumberFormatException e) {
+		} catch (ArgsException e) {
 			valid = false;
 			errorArgumentId = argChar;
 			errorParameter = parameter;
 			errorCode = ErrorCode.INVALID_INTEGER;
-			throw new ArgsException();
+			throw   e;
 		}
 	}
 
@@ -173,7 +174,7 @@ public class Args {
 		currentArgument++;
 		try {
 
-			stringArgs.get(argChar).setString(args[currentArgument]);
+			stringArgs.get(argChar).set(args[currentArgument]);
 
 		} catch (ArrayIndexOutOfBoundsException e) {
 			valid = false;
@@ -188,9 +189,10 @@ public class Args {
 	}
 
 	private void setBooleanArg(char argChar, boolean value) {
-
-		booleanArgs.get(argChar).setBoolean(value);
-
+		try {
+			 booleanArgs.get(argChar).set("true");
+			} catch (ArgsException e) {
+			 }
 	}
 
 	private boolean isBooleanArg(char argChar) {
@@ -235,17 +237,17 @@ public class Args {
 
 	public String getString(char arg) {
 		ArgumentMarshaler am = stringArgs.get(arg);
-		return am == null ? "" : am.getString();
+		return am == null ? "" : (String) am.get();
 	}
 
 	public int getInt(char arg) {
 		ArgumentMarshaler am = intArgs.get(arg);
-		return am == null ? 0 : am.getInteger();
+		return am == null ? 0 : (Integer) am.get();
 	}
 
 	public boolean getBoolean(char arg) {
 		ArgumentMarshaler am = booleanArgs.get(arg);
-		return am != null && am.getBoolean();
+		return am != null && (Boolean) am.get();
 	}
 
 	public boolean has(char arg) {
@@ -256,6 +258,4 @@ public class Args {
 		return valid;
 	}
 
-	private class ArgsException extends Exception {
-	}
 }
