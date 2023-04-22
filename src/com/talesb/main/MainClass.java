@@ -1,6 +1,6 @@
 package com.talesb.main;
 
-import java.text.ParseException;
+import com.talesb.main.exception.ArgsException;
 
 public class MainClass {
 	public static void main(String[] args) {
@@ -15,9 +15,8 @@ public class MainClass {
 			 System.out.println(port);
 			 System.out.println(directory);
 			
-//			executeApplication(logging, port, directory);
 		
-		} catch (ParseException e) {
+		} catch (ArgsException e) {
 			System.out.printf("Argument error: %s\n", e.getMessage());
 		}
 		

@@ -5,32 +5,32 @@ import java.util.NoSuchElementException;
 
 import com.talesb.main.exception.ArgsException;
 
-public class IntegerArgumentMarshaler implements ArgumentMarshaler {
-
-	private int intValue = 0;
+public class DoubleArgumentMarshaler implements ArgumentMarshaler {
+	private double doubleValue = 0;
 
 	public void set(Iterator<String> currentArgument) throws ArgsException {
 		String parameter = null;
 		try {
 			parameter = currentArgument.next();
-			intValue = Integer.parseInt(parameter);
+			doubleValue = Double.parseDouble(parameter);
 		} catch (NoSuchElementException e) {
-			 throw new ArgsException(ArgsException.ErrorCode.MISSING_INTEGER,parameter);
+			throw new ArgsException(ArgsException.ErrorCode.MISSING_DOUBLE, parameter);
 		} catch (NumberFormatException e) {
-			throw e;
-		}
-	}
-
-	public void set(String s) throws ArgsException {
-		try {
-			intValue = Integer.parseInt(s);
-		} catch (NumberFormatException e) {
-			throw new ArgsException();
+			throw new ArgsException(ArgsException.ErrorCode.INVALID_DOUBLE, parameter);
 		}
 	}
 
 	public Object get() {
-		return intValue;
+		return doubleValue;
+	}
+
+	@Override
+	public void set(String s) throws ArgsException {
+		try {
+			doubleValue = Double.parseDouble(s);
+		} catch (NumberFormatException e) {
+			throw new ArgsException();
+		}
 	}
 
 }
